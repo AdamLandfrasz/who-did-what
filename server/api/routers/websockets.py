@@ -10,7 +10,7 @@ websockets_router = APIRouter()
 @websockets_router.websocket("/connect")
 async def websocket_endpoint(
     websocket: WebSocket,
-    client_repository:ClientRepository = Depends(get_client_repository)
+    client_repository: ClientRepository = Depends(get_client_repository),
 ):
     await websocket.accept()
     client_repository.add_client(websocket.cookies["session_id"], websocket)
@@ -23,13 +23,13 @@ async def websocket_endpoint(
 
 @websockets_router.get("/ping")
 async def ping_websockets(
-    name:str, 
+    name: str,
     session_id: Annotated[str | None, Cookie()] = None,
-    client_repository:ClientRepository = Depends(get_client_repository)
+    client_repository: ClientRepository = Depends(get_client_repository),
 ):
     filtered_clients = [
-        client 
-        for sid, client in client_repository.get_clients().items() 
+        client
+        for sid, client in client_repository.get_clients().items()
         if sid != session_id
     ]
     async with asyncio.TaskGroup() as tg:

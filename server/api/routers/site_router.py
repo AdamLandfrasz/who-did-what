@@ -11,7 +11,7 @@ site_router = APIRouter()
 @site_router.get("/", response_class=HTMLResponse)
 async def index(request: Request, session_id: Annotated[str | None, Cookie()] = None):
     templates = Jinja2Templates(directory="server/templates")
-    response = templates.TemplateResponse("index.html",{"request": request})
+    response = templates.TemplateResponse("index.html", {"request": request})
     if not session_id:
         response.set_cookie("session_id", value=uuid.uuid4())
     return response
