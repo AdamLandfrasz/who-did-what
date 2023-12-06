@@ -16,10 +16,11 @@ class ClientRepository:
     def get_clients(self) -> list[Player]:
         return [*self._client_sessions.values()]
 
-    def add_client(self, session_id: SessionId, websocket: WebSocket):
+    def add_client(self, session_id: SessionId, player_name: str) -> Player:
         self._client_sessions[session_id] = Player(
-            session_id=session_id, websocket=websocket
+            session_id=session_id, name=player_name
         )
+        return self._client_sessions[session_id]
 
     def delete_client(self, session_id: SessionId):
         del self._client_sessions[session_id]

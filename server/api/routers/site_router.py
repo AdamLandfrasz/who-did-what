@@ -30,5 +30,9 @@ async def index(
         return RedirectResponse("/")
     templates = Jinja2Templates(directory="server/templates")
     return templates.TemplateResponse(
-        "joined.html", {"request": request, "player": current_player}
+        "joined.html",
+        {
+            "request": request,
+            "current_player": current_player,
+        },
     )
