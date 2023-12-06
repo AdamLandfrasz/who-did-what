@@ -1,8 +1,10 @@
 from typing import Annotated
 import uuid
-from fastapi import APIRouter, Cookie, Request
-from fastapi.responses import HTMLResponse
+from fastapi import APIRouter, Cookie, Depends, Request
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
+
+from server.api.repository import ClientRepository, get_client_repository
 
 
 site_router = APIRouter()
@@ -15,3 +17,18 @@ async def index(request: Request, session_id: Annotated[str | None, Cookie()] = 
     if not session_id:
         response.set_cookie("session_id", value=uuid.uuid4())
     return response
+
+
+@site_router.get("/joined", response_class=HTMLResponse)
+async def index(
+    request: Request,
+    client_repository: Annotated[ClientRepository, Depends(get_client_repository)],
+    session_id: Annotated[str | None, Cookie()] = None,
+):
+    current_player = client_repository.get_client(session_id)
+    if not current_player:
+        return RedirectResponse("/")
+    templates = Jinja2Templates(directory="server/templates")
+    return templates.TemplateResponse(
+        "joined.html", {"request": request, "player": current_player}
+    )

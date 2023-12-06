@@ -10,8 +10,8 @@ class ClientRepository:
     def __init__(self) -> None:
         self._client_sessions: dict[SessionId, Player] = {}
 
-    def get_client(self, session_id: SessionId) -> Player:
-        return self._client_sessions[session_id]
+    def get_client(self, session_id: SessionId) -> Player | None:
+        return self._client_sessions.get(session_id)
 
     def get_clients(self) -> list[Player]:
         return [*self._client_sessions.values()]

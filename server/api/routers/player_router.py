@@ -20,8 +20,8 @@ async def ping_websockets(
 @player_router.get("/join")
 async def player_join(
     player_name: str,
+    client_repository: Annotated[ClientRepository, Depends(get_client_repository)],
     session_id: Annotated[str | None, Cookie()] = None,
-    client_repository: ClientRepository = Depends(get_client_repository),
 ):
     player = client_repository.get_client(session_id)
     player.name = player_name
