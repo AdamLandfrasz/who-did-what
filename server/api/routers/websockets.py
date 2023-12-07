@@ -1,7 +1,7 @@
 import asyncio
 from typing import Annotated
 from fastapi import APIRouter, Depends, WebSocket, WebSocketDisconnect
-from server.api.repository import get_player_repository, PlayerRepository
+from server.api.repositories.player_repository import get_player_repository, PlayerRepository
 from server.api.schemas import Player
 
 

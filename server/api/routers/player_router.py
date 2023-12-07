@@ -1,7 +1,7 @@
 from typing import Annotated
 from fastapi import APIRouter, Cookie, Depends, HTTPException, status
 
-from server.api.repository import PlayerRepository, get_player_repository
+from server.api.repositories.player_repository import PlayerRepository, get_player_repository
 
 player_router = APIRouter()
 

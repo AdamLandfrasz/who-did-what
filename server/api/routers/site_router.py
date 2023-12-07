@@ -5,7 +5,7 @@ from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 from server.api.exceptions import MissingSessionCookieException
 
-from server.api.repository import PlayerRepository, get_player_repository
+from server.api.repositories.player_repository import PlayerRepository, get_player_repository
 
 
 site_router = APIRouter()
