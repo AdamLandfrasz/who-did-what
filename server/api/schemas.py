@@ -1,5 +1,6 @@
+from __future__ import annotations
 from fastapi import WebSocket
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class SuccessResponse(BaseModel):
@@ -12,4 +13,15 @@ class Player(BaseModel):
     session_id: str
     name: str
     websocket: WebSocket | None = None
-    room: str | None = None
+    room: Room | None = None
+
+
+class Room(BaseModel):
+    id: str
+    players: list[Player] = Field(default=list)
+
+    def add_player(self, player: Player):
+        self.players.append(player)
+
+    def remove_player(self, player: Player):
+        self.players.remove(player)
