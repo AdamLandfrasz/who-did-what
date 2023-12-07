@@ -7,6 +7,10 @@ class SuccessResponse(BaseModel):
     success: bool = True
 
 
+class ErrorResponse(BaseModel):
+    detail: str
+
+
 class Player(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
