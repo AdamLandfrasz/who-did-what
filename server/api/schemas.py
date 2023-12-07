@@ -4,11 +4,15 @@ from pydantic import BaseModel, ConfigDict, Field
 
 
 class SuccessResponse(BaseModel):
-    success: bool = True
+    success: bool
 
 
 class ErrorResponse(BaseModel):
     detail: str
+
+
+class RoomResponse(BaseModel):
+    id: str
 
 
 class Player(BaseModel):
