@@ -18,6 +18,7 @@ class Player(BaseModel):
 
 class Room(BaseModel):
     id: str
+    host: Player
     players: list[Player] = Field(default=list)
 
     def add_player(self, player: Player):
