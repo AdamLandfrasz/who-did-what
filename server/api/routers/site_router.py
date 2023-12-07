@@ -3,6 +3,7 @@ import uuid
 from fastapi import APIRouter, Cookie, Depends, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
+from server.api.exceptions import MissingSessionCookieException
 
 from server.api.repository import PlayerRepository, get_player_repository
 
@@ -10,7 +11,12 @@ from server.api.repository import PlayerRepository, get_player_repository
 site_router = APIRouter()
 
 
-@site_router.get("/", response_class=HTMLResponse)
+async def require_session_cookie(session_id: Annotated[str | None, Cookie()] = None):
+    if not session_id:
+        raise MissingSessionCookieException("session cookie is missing")
+
+
+@site_router.get("/")
 async def index(request: Request, session_id: Annotated[str | None, Cookie()] = None):
     templates = Jinja2Templates(directory="server/templates")
     response = templates.TemplateResponse("index.html", {"request": request})
@@ -19,11 +25,14 @@ async def index(request: Request, session_id: Annotated[str | None, Cookie()] = 
     return response
 
 
-@site_router.get("/joined", response_class=HTMLResponse)
-async def index(
+@site_router.get(
+    "/joined",
+    dependencies=[Depends(require_session_cookie)],
+)
+async def joined(
     request: Request,
     player_repository: Annotated[PlayerRepository, Depends(get_player_repository)],
-    session_id: Annotated[str | None, Cookie()] = None,
+    session_id: Annotated[str, Cookie()],
 ):
     current_player = player_repository.get_player(session_id)
     if not current_player:
