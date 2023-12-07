@@ -3,7 +3,6 @@ from typing import Annotated
 from fastapi import APIRouter, Cookie, Depends, Path, Request
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
-from server.api.exceptions import MissingSessionCookieException
 
 from server.api.repositories.player_repository import (
     PlayerRepository,
@@ -15,11 +14,6 @@ from server.api.repositories.room_repository import RoomRepository, room_reposit
 site_router = APIRouter()
 
 
-async def require_session_cookie(session_id: Annotated[str | None, Cookie()] = None):
-    if not session_id:
-        raise MissingSessionCookieException("session cookie is missing")
-
-
 @site_router.get("/")
 async def index(request: Request, session_id: Annotated[str | None, Cookie()] = None):
     templates = Jinja2Templates(directory="server/templates")
@@ -29,14 +23,11 @@ async def index(request: Request, session_id: Annotated[str | None, Cookie()] = 
     return response
 
 
-@site_router.get(
-    "/joined",
-    dependencies=[Depends(require_session_cookie)],
-)
+@site_router.get("/joined")
 async def joined(
     request: Request,
     player_repository: Annotated[PlayerRepository, Depends(player_repository)],
-    session_id: Annotated[str, Cookie()],
+    session_id: Annotated[str, Cookie()] = None,
 ):
     current_player = player_repository.get_player(session_id)
     if not current_player:
@@ -51,16 +42,13 @@ async def joined(
     )
 
 
-@site_router.get(
-    "/room/{room_id}",
-    dependencies=[Depends(require_session_cookie)],
-)
+@site_router.get("/room/{room_id}")
 async def render_lobby(
     request: Request,
     room_id: Annotated[str, Path()],
-    session_id: Annotated[str, Cookie()],
     player_repository: Annotated[PlayerRepository, Depends(player_repository)],
     room_repository: Annotated[RoomRepository, Depends(room_repository)],
+    session_id: Annotated[str, Cookie()] = None,
 ):
     current_player = player_repository.get_player(session_id)
     current_room = room_repository.get_room(room_id)

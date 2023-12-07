@@ -5,16 +5,8 @@ joinButton.addEventListener('click', async (event) => {
     const joinResponse = await fetch(`/players/join?player_name=${nameField.value}`);
     const { success } = await joinResponse.json();
     if (success) {
-        const createRoomResp = await fetch(
-            "/rooms/create",
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-            }
-        );
-        const {id} = await createRoomResp.json()
+        const createRoomResp = await fetch("/rooms/create");
+        const { id } = await createRoomResp.json()
         if (id) {
             window.location.replace(`/room/${id}`)
         }
