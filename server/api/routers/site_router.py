@@ -27,7 +27,7 @@ async def index(request: Request, session_id: Annotated[str | None, Cookie()] = 
 async def joined(
     request: Request,
     player_repository: Annotated[PlayerRepository, Depends(player_repository)],
-    session_id: Annotated[str, Cookie()] = None,
+    session_id: Annotated[str | None, Cookie()] = None,
 ):
     current_player = player_repository.get_player(session_id)
     if not current_player:
@@ -48,7 +48,7 @@ async def render_lobby(
     room_id: Annotated[str, Path()],
     player_repository: Annotated[PlayerRepository, Depends(player_repository)],
     room_repository: Annotated[RoomRepository, Depends(room_repository)],
-    session_id: Annotated[str, Cookie()] = None,
+    session_id: Annotated[str | None, Cookie()] = None,
 ):
     current_player = player_repository.get_player(session_id)
     current_room = room_repository.get_room(room_id)

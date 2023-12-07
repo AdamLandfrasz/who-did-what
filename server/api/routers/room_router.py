@@ -27,7 +27,7 @@ async def create_room(
 
 
 @room_router.get("/join/{room_id}", response_model=SuccessResponse)
-async def create_room(
+async def join_room(
     room_id: Annotated[str, Path()],
     session_id: Annotated[str, Cookie()],
     player_repository: Annotated[PlayerRepository, Depends(player_repository)],
