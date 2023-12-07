@@ -1,6 +1,4 @@
 from functools import lru_cache
-from fastapi import WebSocket
-
 from server.api.schemas import Player
 
 SessionId = str

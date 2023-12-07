@@ -1,7 +1,7 @@
-from typing import Annotated
 import uuid
+from typing import Annotated
 from fastapi import APIRouter, Cookie, Depends, Request
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 from server.api.exceptions import MissingSessionCookieException
 

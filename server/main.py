@@ -1,5 +1,4 @@
-from fastapi import FastAPI, Request
-from fastapi.responses import RedirectResponse
+from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from server.api.exceptions import MissingSessionCookieException, handle_missing_session
 from server.api.routers.router import api_router
