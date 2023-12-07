@@ -1,37 +1,38 @@
 import asyncio
 from typing import Annotated
-from fastapi import APIRouter, Cookie, Depends, Request, WebSocket, WebSocketDisconnect
-from server.api.repository import get_client_repository, ClientRepository
+from fastapi import APIRouter, Depends, WebSocket, WebSocketDisconnect
+from server.api.repository import get_player_repository, PlayerRepository
+from server.api.schemas import Player
 
 
 websockets_router = APIRouter()
 
 
+async def update_players(players: list[Player]):
+    connected_players = [player for player in players if player.websocket]
+    async with asyncio.TaskGroup() as tg:
+        for player in connected_players:
+            tg.create_task(
+                player.websocket.send_json(
+                    {
+                        "messageType": "player_joined",
+                        "playersJoined": [player.name for player in connected_players],
+                    }
+                )
+            )
+
+
 @websockets_router.websocket("/connect")
 async def websocket_endpoint(
     websocket: WebSocket,
-    client_repository: ClientRepository = Depends(get_client_repository),
+    player_repository: Annotated[PlayerRepository, Depends(get_player_repository)],
 ):
     await websocket.accept()
-    client_repository.add_client(websocket.cookies["session_id"], websocket)
+    player_repository.get_player(websocket.cookies["session_id"]).websocket = websocket
+    await update_players(player_repository.get_players())
     try:
         while True:
             await websocket.receive_json()
     except WebSocketDisconnect:
-        client_repository.delete_client(websocket.cookies["session_id"])
-
-
-@websockets_router.get("/ping")
-async def ping_websockets(
-    name: str,
-    session_id: Annotated[str | None, Cookie()] = None,
-    client_repository: ClientRepository = Depends(get_client_repository),
-):
-    filtered_clients = [
-        client
-        for sid, client in client_repository.get_clients().items()
-        if sid != session_id
-    ]
-    async with asyncio.TaskGroup() as tg:
-        for client in filtered_clients:
-            tg.create_task(client.send_json({"message": f"{name} joined the game!"}))
+        player_repository.get_player(websocket.cookies["session_id"]).websocket = None
+        await update_players(player_repository.get_players())
