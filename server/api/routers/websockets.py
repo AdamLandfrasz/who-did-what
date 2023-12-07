@@ -31,11 +31,13 @@ async def websocket_endpoint(
     player_repository: Annotated[PlayerRepository, Depends(player_repository)],
 ):
     await websocket.accept()
-    player_repository.get_player(websocket.cookies["session_id"]).websocket = websocket
-    await update_players(player_repository.get_players())
+    current_player = player_repository.get_player(websocket.cookies["session_id"])
+    current_player.websocket = websocket
+    players_to_message = current_player.room.players
+    await update_players(players_to_message)
     try:
         while True:
             await websocket.receive_json()
     except WebSocketDisconnect:
-        player_repository.get_player(websocket.cookies["session_id"]).websocket = None
-        await update_players(player_repository.get_players())
+        current_player.websocket = None
+        await update_players(players_to_message)
