@@ -1,14 +1,10 @@
-const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
-const socket = new WebSocket(`${protocol}://${window.location.host}/ws/connect`);
-socket.onmessage = event => {
-    const { message } = JSON.parse(event.data);
-    alert(message);
-}
-
 const joinButton = document.querySelector('#join');
 const nameField = document.querySelector('#name');
-joinButton.addEventListener('click', async  (event) => {
-    event.preventDefault();
-    await fetch(`/ws/ping?name=${nameField.value}`);
+joinButton.addEventListener('click', async (event) => {
+    event.preventDefault()
+    const resp = await fetch(`/players/join?player_name=${nameField.value}`);
+    if (resp.ok) {
+        window.location.replace('/joined')
+    }
 });
 
