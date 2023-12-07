@@ -5,7 +5,10 @@ from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 from server.api.exceptions import MissingSessionCookieException
 
-from server.api.repositories.player_repository import PlayerRepository, get_player_repository
+from server.api.repositories.player_repository import (
+    PlayerRepository,
+    player_repository,
+)
 
 
 site_router = APIRouter()
@@ -31,7 +34,7 @@ async def index(request: Request, session_id: Annotated[str | None, Cookie()] = 
 )
 async def joined(
     request: Request,
-    player_repository: Annotated[PlayerRepository, Depends(get_player_repository)],
+    player_repository: Annotated[PlayerRepository, Depends(player_repository)],
     session_id: Annotated[str, Cookie()],
 ):
     current_player = player_repository.get_player(session_id)

@@ -23,5 +23,5 @@ class PlayerRepository:
 
 
 @lru_cache(maxsize=1)
-def get_player_repository() -> PlayerRepository:
+def player_repository() -> PlayerRepository:
     return PlayerRepository()

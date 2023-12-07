@@ -1,7 +1,10 @@
 from typing import Annotated
 from fastapi import APIRouter, Cookie, Depends, HTTPException, status
 
-from server.api.repositories.player_repository import PlayerRepository, get_player_repository
+from server.api.repositories.player_repository import (
+    PlayerRepository,
+    player_repository,
+)
 
 player_router = APIRouter()
 
@@ -9,7 +12,7 @@ player_router = APIRouter()
 @player_router.get("/join")
 async def add_player(
     player_name: str,
-    player_repository: Annotated[PlayerRepository, Depends(get_player_repository)],
+    player_repository: Annotated[PlayerRepository, Depends(player_repository)],
     session_id: Annotated[str | None, Cookie()] = None,
 ):
     if not session_id:

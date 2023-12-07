@@ -1,7 +1,10 @@
 import asyncio
 from typing import Annotated
 from fastapi import APIRouter, Depends, WebSocket, WebSocketDisconnect
-from server.api.repositories.player_repository import get_player_repository, PlayerRepository
+from server.api.repositories.player_repository import (
+    player_repository,
+    PlayerRepository,
+)
 from server.api.schemas import Player
 
 
@@ -25,7 +28,7 @@ async def update_players(players: list[Player]):
 @websockets_router.websocket("/connect")
 async def websocket_endpoint(
     websocket: WebSocket,
-    player_repository: Annotated[PlayerRepository, Depends(get_player_repository)],
+    player_repository: Annotated[PlayerRepository, Depends(player_repository)],
 ):
     await websocket.accept()
     player_repository.get_player(websocket.cookies["session_id"]).websocket = websocket
