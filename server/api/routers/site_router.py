@@ -52,8 +52,10 @@ async def render_lobby(
 ):
     current_player = player_repository.get_player(session_id)
     current_room = room_repository.get_room(room_id)
-    if not (current_player and current_room):
+    if not current_room:
         return RedirectResponse("/")
+    if not current_player:
+        return RedirectResponse(f"/?room_id={current_room.id}")
     if current_player not in current_room.players:
         current_room.add_player(current_player)
         current_player.room = current_room
