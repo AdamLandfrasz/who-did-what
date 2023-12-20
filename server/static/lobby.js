@@ -20,8 +20,11 @@ const showPlayers = ({playersJoined, host}) => {
     joinedPlayers.innerHTML = '';
     playersJoined.forEach(player => {
         let newPlayerElement = document.createElement('p');
-        newPlayerElement.textContent = player;
-        if (host === player) {
+        newPlayerElement.textContent = player.connected? player.name : `${player.name} (disconnected)`;
+        if (!player.connected) {
+            newPlayerElement.classList.add('disconnected');
+        }
+        if (host === player.sessionId) {
             newPlayerElement.classList.add('host');
         }
         joinedPlayers.appendChild(newPlayerElement);

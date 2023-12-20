@@ -11,7 +11,7 @@ from server.api.schemas import Player
 websockets_router = APIRouter()
 
 
-async def update_players(players: list[Player], host:Player):
+async def update_players(players: list[Player], host: Player):
     connected_players = [player for player in players if player.websocket]
     async with asyncio.TaskGroup() as tg:
         for player in connected_players:
@@ -19,8 +19,15 @@ async def update_players(players: list[Player], host:Player):
                 player.websocket.send_json(
                     {
                         "messageType": "player_joined",
-                        "playersJoined": [player.name for player in connected_players],
-                        "host": host.name,
+                        "playersJoined": [
+                            {
+                                "name": player.name,
+                                "sessionId": player.session_id,
+                                "connected": player.websocket is not None,
+                            }
+                            for player in players
+                        ],
+                        "host": host.session_id,
                     }
                 )
             )

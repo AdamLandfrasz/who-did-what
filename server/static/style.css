@@ -60,6 +60,10 @@ p.host {
     font-weight: bold;
 }
 
+p.disconnected {
+    color: #696969;
+}
+
 /* Media query for mobile devices */
 @media only screen and (max-width: 600px) {
     #name {
