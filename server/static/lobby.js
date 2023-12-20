@@ -9,18 +9,21 @@ const initWebSocket = () => {
                 alert(jsonData.message);
                 break;
             case 'player_joined':
-                showPlayers(jsonData.playersJoined);
+                showPlayers(jsonData);
                 break;
         }
     }
 }
 
-const showPlayers = (players) => {
+const showPlayers = ({playersJoined, host}) => {
     const joinedPlayers = document.querySelector('#joined-players');
     joinedPlayers.innerHTML = '';
-    players.forEach(player => {
+    playersJoined.forEach(player => {
         let newPlayerElement = document.createElement('p');
         newPlayerElement.textContent = player;
+        if (host === player) {
+            newPlayerElement.classList.add('host');
+        }
         joinedPlayers.appendChild(newPlayerElement);
     });
 }
