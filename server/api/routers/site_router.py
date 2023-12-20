@@ -9,6 +9,7 @@ from server.api.repositories.player_repository import (
     player_repository,
 )
 from server.api.repositories.room_repository import RoomRepository, room_repository
+from server.api.routers.websockets import send_update_to_room
 
 
 site_router = APIRouter()
@@ -56,9 +57,14 @@ async def render_lobby(
         return RedirectResponse("/")
     if not current_player:
         return RedirectResponse(f"/?room_id={current_room.id}")
+
     if current_player not in current_room.players:
+        if current_player.room:
+            current_player.room.remove_player(current_player)
+            await send_update_to_room(current_player.room)
         current_room.add_player(current_player)
         current_player.room = current_room
+
     templates = Jinja2Templates(directory="server/templates")
     return templates.TemplateResponse(
         "lobby.html",

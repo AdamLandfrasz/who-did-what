@@ -16,5 +16,9 @@ async def add_player(
     session_id: Annotated[str, Cookie()],
     player_repository: Annotated[PlayerRepository, Depends(player_repository)],
 ):
-    player_repository.add_player(session_id, player_name)
+    existing_player = player_repository.get_player(session_id)
+    if existing_player:
+        existing_player.name = player_name
+    else:
+        player_repository.add_player(session_id, player_name)
     return {"success": True}

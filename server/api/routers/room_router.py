@@ -22,7 +22,6 @@ async def create_room(
             status_code=status.HTTP_404_NOT_FOUND, detail="host player does not exist"
         )
     room_created = room_repository.add_room(host=host_player)
-    host_player.room = room_created
     return room_created
 
 

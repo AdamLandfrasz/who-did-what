@@ -18,7 +18,6 @@ class RoomRepository:
             id=new_room_id,
             host=host,
         )
-        new_room.add_player(host)
         self._rooms[new_room_id] = new_room
         return new_room
 
