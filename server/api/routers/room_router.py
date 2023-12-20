@@ -39,7 +39,7 @@ async def join_room(
             status_code=status.HTTP_404_NOT_FOUND, detail="player does not exist"
         )
     room_being_joined = room_repository.get_room(room_id)
-    if not joining_player:
+    if not room_being_joined:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"room {room_id} does not exist",
